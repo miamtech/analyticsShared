@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile
+import org.jetbrains.kotlin.gradle.targets.js.ir.JsIrBinary
+
 plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.android.library)
@@ -20,10 +23,21 @@ kotlin {
 
     jvm()
 
-    js {
+    js(IR) {
+        useEsModules()
+        generateTypeScriptDefinitions()
         browser {
             webpackTask {
                 mainOutputFileName = "analyticsShared.js"
+                sourceMaps = true
+            }
+            commonWebpackConfig {
+                sourceMaps = true
+            }
+        }
+        binaries.withType<JsIrBinary>().all {
+            this.linkTask.configure {
+                kotlinOptions { sourceMap = true }
             }
         }
         binaries.executable()
@@ -72,6 +86,11 @@ kotlin {
             implementation(libs.ktor.client.darwin)
         }
 
+        all {
+            languageSettings.apply {
+                optIn("kotlin.js.ExperimentalJsExport")
+            }
+        }
     }
 
     //https://kotlinlang.org/docs/native-objc-interop.html#export-of-kdoc-comments-to-generated-objective-c-headers
