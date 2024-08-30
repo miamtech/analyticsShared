@@ -1,0 +1,85 @@
+require 'fileutils'
+
+# Helper method to convert a string to PascalCase
+def camelize(str)
+  str.split('_').map(&:capitalize).join
+end
+
+# Method to generate TypeScript interface and function based on a Kotlin function signature
+def generate_ts_interface(kotlin_signature, original_function_name, output_folder)
+  # Split parameters and process each one
+  params_string = kotlin_signature.match(/\((.*?)\)/)[1]
+  params = params_string.split(",").map(&:strip)
+  ts_interface_params = []
+  ts_function_params = []
+
+  params.each do |param|
+    name, type = param.split(":").map(&:strip)
+    is_optional = type.end_with?("?")
+
+    # TypeScript equivalent of Kotlin types
+    ts_type = case type.chomp("?")
+              when "String" then "string"
+              when "Int" then "number"
+              when "Boolean" then "boolean"
+              else "any" # You can expand this for more types
+              end
+
+    ts_interface_params << "#{name}#{is_optional ? '?' : ''}: #{ts_type};"
+    ts_function_params << name
+  end
+
+  # Generate TypeScript interface and function
+  ts_interface_name = camelize(original_function_name) + "Params"
+  ts_function_name = original_function_name + "Ts"
+  import_statement = "import { #{original_function_name} } from '../../../../../src/assets/analyticsShared/analyticsShared.js';"
+  ts_interface = "interface #{ts_interface_name} {\n  #{ts_interface_params.join("\n  ")}\n}\n"
+  ts_function = <<~TS
+    export function #{ts_function_name}({ #{ts_function_params.join(", ")} }: #{ts_interface_name}): void {
+      // Call the original Kotlin function
+      #{original_function_name}(#{ts_function_params.join(", ")});
+    }
+  TS
+
+  # Create the output folder if it doesn't exist
+  FileUtils.mkdir_p(output_folder)
+
+  # Define the output file path
+  output_file_path = File.join(output_folder, "#{original_function_name}.ts")
+
+  # Write the TypeScript code to the file
+  File.open(output_file_path, 'w') do |file|
+    file.puts import_statement
+    file.puts ts_interface
+    file.puts ts_function
+  end
+
+  puts "TypeScript file generated at: #{output_file_path}"
+end
+
+# Method to process Kotlin files in a directory
+def process_kotlin_files(directory, output_folder)
+  Dir.glob(File.join(directory, '**/*.kt')).each do |file_path|
+    puts "Processing file: #{file_path}"
+    lines = File.readlines(file_path)
+    lines.each_with_index do |line, index|
+      if line =~ /@JsName/  # Look for the @JsName annotation
+        function_line = lines[index + 1]&.strip
+        if function_line && function_line =~ /fun /
+          function_name = function_line.match(/fun (\w+)/)[1]
+          puts "Found function: #{function_name} in #{file_path}"
+          generate_ts_interface(function_line, function_name, output_folder)
+        else
+          puts "No function found after @JsName in #{file_path}"
+        end
+      end
+    end
+  end
+end
+
+# Define input directory and output directory
+input_directory = File.expand_path('../../analyticsShared/src/commonMain/kotlin/mealz/ai/events', __dir__)
+output_directory = File.expand_path('../../analyticsShared/scripts/typeScriptInterfaces', __dir__)
+
+# Process the Kotlin files to generate TypeScript files
+process_kotlin_files(input_directory, output_directory)

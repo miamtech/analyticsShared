@@ -19,9 +19,17 @@ import kotlin.js.JsExport
 import kotlin.js.JsName
 
 // TODO
+// test with ios
+// test with android
+// test with npm
+// build with wasm?
 // add emitters
 // add log levels
 // get device with expect/actual
+// add all functions
+// update web
+// update android
+// update ios
 
 @JsExport
 public object SharedAnalytics {
@@ -46,8 +54,8 @@ public object SharedAnalytics {
         install(DefaultRequest)
     }
 
-    @JsName("init")
-    public fun init(supplierOrigin: String, version: String) {
+    @JsName("init")public fun init(supplierOrigin: String, version: String) {
+
         if (alreadyInitialized) return
         domain.value = supplierOrigin
         val isHttp = supplierOrigin.startsWith("https://")
