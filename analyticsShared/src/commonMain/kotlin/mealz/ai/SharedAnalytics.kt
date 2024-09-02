@@ -1,5 +1,6 @@
 package mealz.ai
 
+import ai.mealz.analytics.getPlatform
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.BrowserUserAgent
 import io.ktor.client.plugins.DefaultRequest
@@ -82,7 +83,7 @@ public object SharedAnalytics {
     internal fun buildAndSendPlausibleRequest(eventType: String, path: String, props: PlausibleProps) {
         domain.value?.let { domain ->
             httpOrigin.value?.let { httpOrigin ->
-                val propsWithVersionAndDevice = props.copy(version = version.value, device = "")
+                val propsWithVersionAndDevice = props.copy(version = version.value, device = getPlatform().name)
                 val url = httpOrigin + path
                 val event = PlausibleEvent(
                     eventType,
