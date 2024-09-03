@@ -1,9 +1,13 @@
 package mealz.ai
 
 import kotlinx.serialization.Serializable
+import kotlin.js.JsExport
+import kotlin.js.JsName
 
 @Serializable
-internal data class PlausibleProps(
+@JsExport
+@JsName("PlausibleProps")
+data class PlausibleProps(
     // Recipe
     val recipe_id: String? = null,
     // Catalog
