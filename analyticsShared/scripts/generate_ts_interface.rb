@@ -2,13 +2,13 @@ require 'fileutils'
 
 # Helper method to convert a string to PascalCase
 def camelize(str)
-  str.split('_').map(&:capitalize).join
+  str.gsub(/(?:^|_)([a-z])/) { $1.upcase }
 end
 
 # Method to generate TypeScript interface and function based on a Kotlin function signature
 def generate_ts_interface(kotlin_signature, original_function_name, output_folder)
   # Split parameters and process each one
-  params_string = kotlin_signature.match(/\((.*?)\)/)[1]
+  params_string = kotlin_signature.match(/\((.*?)\)/m)[1] # 'm' flag to match across multiple lines
   params = params_string.split(",").map(&:strip)
   ts_interface_params = []
   ts_function_params = []
@@ -62,10 +62,22 @@ def process_kotlin_files(directory, output_folder)
   Dir.glob(File.join(directory, '**/*.kt')).each do |file_path|
     puts "Processing file: #{file_path}"
     lines = File.readlines(file_path)
+
     lines.each_with_index do |line, index|
       if line =~ /@JsName/  # Look for the @JsName annotation
-        function_line = lines[index + 1]&.strip
-        if function_line && function_line =~ /fun /
+        function_lines = []
+        while true
+          next_line = lines[index + 1]&.strip
+          break unless next_line
+
+          # Continue to collect lines until a line ends with ')', indicating the end of the function signature
+          function_lines << next_line
+          index += 1
+          break if next_line.include?(")")
+        end
+
+        function_line = function_lines.join(" ")
+        if function_line =~ /fun (\w+)\s*\(/
           function_name = function_line.match(/fun (\w+)/)[1]
           puts "Found function: #{function_name} in #{file_path}"
           generate_ts_interface(function_line, function_name, output_folder)

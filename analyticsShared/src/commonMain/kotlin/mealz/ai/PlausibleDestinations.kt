@@ -3,6 +3,8 @@ package mealz.ai
 internal enum class PlausibleDestinations(val plausiblePath: String) {
     // -------------------------------- PAGE VIEW ---------------------------------------------
     PAGEVIEW("pageview"),
+    // ---------------------------------- SEARCH ----------------------------------------------
+    SEARCH("search"),
     // ---------------------------------- RECIPE ----------------------------------------------
     RECIPE_SHOW("recipe.show"),
     RECIPE_DISPLAY("recipe.display"),
@@ -12,9 +14,8 @@ internal enum class PlausibleDestinations(val plausiblePath: String) {
     RECIPE_UNLIKE("recipe.unlike"),
     RECIPE_SPONSOR("recipe.sponsor"),
     // ---------------------------------- CATALOG ----------------------------------------------
-    CATALOG_SEARCH("search"),
-    CATALOG_SHOW("catalog.show"),
-    CATALOG_DISPLAY("catalog.display"),
+    CATEGORY_SHOW("category.show"),
+    CATEGORY_DISPLAY("category.display"),
     // ---------------------------------- PRODUCT ----------------------------------------------
     BASKET_ENTRY_ADD("entry.add"),
     BASKET_ENTRY_DELETE("entry.delete"),
@@ -22,7 +23,7 @@ internal enum class PlausibleDestinations(val plausiblePath: String) {
     BASKET_ENTRY_CHANGE_QUANTITY("entry.change-quantity"),
     // ---------------------------------- PAYMENT ----------------------------------------------
     PAYMENT_STARTED("payment.started"),
-    PAYMENT_FINISHED("payment.confirmed"),
+    PAYMENT_CONFIRMED("payment.confirmed"),
     // ---------------------------------- BASKET ----------------------------------------------
     BASKET_CONFIRMED("basket.confirmed"),
     // ---------------------------------- BASKET ----------------------------------------------
