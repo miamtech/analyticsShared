@@ -10,6 +10,8 @@ jobs:
       (github.event.pull_request.base.ref == 'master' || github.event.pull_request.base.ref == 'main') &&
       startsWith(github.event.pull_request.head.ref, 'release/')
     runs-on: self-hosted
+    env:
+      ANDROID_HOME: /Users/miam/Library/Android/sdk
     steps:
       - uses: actions/checkout@v3
       - name: Extract version from branch name
