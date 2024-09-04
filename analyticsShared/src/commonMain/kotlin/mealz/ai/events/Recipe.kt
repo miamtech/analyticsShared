@@ -8,20 +8,70 @@ import kotlin.js.JsName
 
 @JsExport
 @JsName("sendRecipeShowEvent")
-public fun sendRecipeShowEvent(recipeId: String, catalogId: String?, path: String) {
+fun sendRecipeShowEvent(path: String, recipeId: String, categoryId: String?) {
     SharedAnalytics.buildAndSendPlausibleRequest(
         PlausibleDestinations.RECIPE_SHOW.plausiblePath,
         path,
-        PlausibleProps(recipe_id = recipeId, category_id = catalogId)
+        PlausibleProps(recipe_id = recipeId, category_id = categoryId)
     )
 }
 
 @JsExport
 @JsName("sendRecipeDisplayEvent")
-public fun sendRecipeDisplayEvent(recipeId: String, catalogId: String?, path: String) {
+fun sendRecipeDisplayEvent(path: String, recipeId: String, categoryId: String?) {
     SharedAnalytics.buildAndSendPlausibleRequest(
         PlausibleDestinations.RECIPE_DISPLAY.plausiblePath,
         path,
-        PlausibleProps(recipe_id = recipeId, category_id = catalogId)
+        PlausibleProps(recipe_id = recipeId, category_id = categoryId)
+    )
+}
+
+@JsExport
+@JsName("sendRecipeRemoveEvent")
+fun sendRecipeRemoveEvent(path: String, recipeId: String) {
+    SharedAnalytics.buildAndSendPlausibleRequest(
+        PlausibleDestinations.RECIPE_REMOVE.plausiblePath,
+        path,
+        PlausibleProps(recipe_id = recipeId)
+    )
+}
+
+@JsExport
+@JsName("sendRecipeChangeGuestsEvent")
+fun sendRecipeChangeGuestsEvent(path: String, recipeId: String) {
+    SharedAnalytics.buildAndSendPlausibleRequest(
+        PlausibleDestinations.RECIPE_CHANGE_GUESTS.plausiblePath,
+        path,
+        PlausibleProps(recipe_id = recipeId)
+    )
+}
+
+@JsExport
+@JsName("sendRecipeLikeEvent")
+fun sendRecipeLikeEvent(path: String, recipeId: String, categoryId: String?) {
+    SharedAnalytics.buildAndSendPlausibleRequest(
+        PlausibleDestinations.RECIPE_LIKE.plausiblePath,
+        path,
+        PlausibleProps(recipe_id = recipeId, category_id = categoryId)
+    )
+}
+
+@JsExport
+@JsName("sendRecipeUnlikeEvent")
+fun sendRecipeUnlikeEvent(path: String, recipeId: String, categoryId: String?) {
+    SharedAnalytics.buildAndSendPlausibleRequest(
+        PlausibleDestinations.RECIPE_UNLIKE.plausiblePath,
+        path,
+        PlausibleProps(recipe_id = recipeId, category_id = categoryId)
+    )
+}
+
+@JsExport
+@JsName("sendRecipeSponsorEvent")
+fun sendRecipeSponsorEvent(path: String, recipeId: String) {
+    SharedAnalytics.buildAndSendPlausibleRequest(
+        PlausibleDestinations.RECIPE_SPONSOR.plausiblePath,
+        path,
+        PlausibleProps(recipe_id = recipeId)
     )
 }

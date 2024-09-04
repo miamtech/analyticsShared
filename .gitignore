@@ -6,6 +6,7 @@
 .DS_Store
 build
 */build
+*/dist
 captures
 .externalNativeBuild
 .cxx
@@ -14,3 +15,4 @@ xcuserdata/
 Pods/
 *.jks
 *yarn.lock
+convention-plugins/bin
