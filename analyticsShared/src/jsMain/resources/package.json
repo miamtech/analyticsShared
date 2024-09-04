@@ -2,6 +2,5 @@
   "name": "mealz-shared-analytics",
   "version": "0.0.0",
   "author": "Mealz",
-  "private": true,
   "license": "GNU GPLv3"
 }
