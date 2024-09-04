@@ -32,9 +32,11 @@ import kotlin.js.JsName
 // update android
 // update ios
 
+typealias onEmitFunction = (PlausibleEvent) -> Unit
+
 @JsExport
 public object SharedAnalytics {
-    private val PLAUSIBLE_URL: String = "https://plausible.io/api/event"
+    private const val PLAUSIBLE_URL: String = "https://plausible.io/api/event"
     private val coroutineHandler = CoroutineExceptionHandler { _, exception ->
         println("Mealz error in Analytics $exception ${exception.stackTraceToString()}")
     }
@@ -55,7 +57,10 @@ public object SharedAnalytics {
         install(DefaultRequest)
     }
 
-    @JsName("init")public fun init(supplierOrigin: String, version: String) {
+    private lateinit var onEmit: onEmitFunction
+
+    @JsName("init")
+    public fun init(supplierOrigin: String, version: String, onEmit: onEmitFunction) {
 
         if (alreadyInitialized) return
         domain.value = supplierOrigin
@@ -63,14 +68,8 @@ public object SharedAnalytics {
         httpOrigin.apply { value = if (isHttp) supplierOrigin else "https://$supplierOrigin" }
         this.version.value = version
         println("Analytics init for ${domain.value}")
+        this.onEmit = onEmit;
     }
-
-
-//    fun emitEvent(event: AnalyticEvent) {
-////        To do
-//    }
-//@JsExport
-//public data class AnalyticEvent(val eventType: String, val path: String, val props: PlausibleProps)
 
     private suspend fun HttpClient.postEvent(event: PlausibleEvent) {
         println("will send event $event to $PLAUSIBLE_URL")
@@ -91,10 +90,11 @@ public object SharedAnalytics {
                     domain,
                     propsWithVersionAndDevice
                 )
+                onEmit(event)
                 coroutineScope.launch(coroutineHandler) {
                     httpClient.postEvent(event)
                 }
-            } ?: println("Sending event without httpOrigin initialisation ${httpOrigin.value}")
-        } ?: println("Sending event without domain initialisation ${domain.value}")
+            } ?: println("Cannot send event without httpOrigin initialisation ${httpOrigin.value}")
+        } ?: println("Cannot send event without domain initialisation ${domain.value}")
     }
 }
