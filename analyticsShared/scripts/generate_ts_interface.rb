@@ -108,7 +108,7 @@ end
 
 # Define input directory and output directory
 input_directory = File.expand_path('../../analyticsShared/src/commonMain/kotlin/mealz/ai', __dir__)
-output_directory = File.expand_path('../../analyticsShared/scripts/typescriptInterfaces', __dir__)
+output_directory = File.expand_path('../../analyticsShared/dist/typescriptInterfaces', __dir__)
 
 # Process the Kotlin files to generate TypeScript files
 process_kotlin_files(input_directory, output_directory)
