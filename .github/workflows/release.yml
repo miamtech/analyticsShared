@@ -1,0 +1,53 @@
+name: PR Merge to Master or Main
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  merge-job:
+    if: github.event.pull_request.merged == true &&
+      (github.event.pull_request.base.ref == 'master' || github.event.pull_request.base.ref == 'main') &&
+      startsWith(github.event.pull_request.head.ref, 'release/')
+    runs-on: self-hosted
+    steps:
+      - name: Extract version from branch name
+        id: extract_version
+        run: |
+          # Extract the branch name from GITHUB_REF
+          BRANCH_NAME="${GITHUB_HEAD_REF}"
+          
+          # Use regex to extract the version number (assuming format like release/x.y.z)
+          if [[ "$BRANCH_NAME" =~ release/([0-9]+\.[0-9]+\.[0-9]+) ]]; then
+            VERSION="${BASH_REMATCH[1]}"
+            echo "Version extracted: $VERSION"
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "No version number found in branch name"
+            exit 1
+          fi
+
+      - name: Build dist folder
+        run: |
+          # Build JS output
+          ./gradlew :analyticsShared:jsBrowserProductionWebpack
+          cd analyticsShared
+          # Create TS interfaces
+          ruby scripts/generate_ts_data_classes.rb
+          ruby scripts/generate_ts_interface.rb
+          # Build dist folder
+          cp build/kotlin-webpack/js/productionExecutable/analyticsShared.js dist/analyticsShared.js
+          # Change package.json version
+          sed "s/\"0.0.0\"/\"${VERSION}\"/" build/processedResources/js/main/package.json > dist/package.json
+          cd ..
+
+      - name: Test with Gradle
+        run: ./gradlew test -Pstaging=true
+
+      - name: npm release
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          cd analyticsShared/dist
+          echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}'>.npmrc
+          npm publish

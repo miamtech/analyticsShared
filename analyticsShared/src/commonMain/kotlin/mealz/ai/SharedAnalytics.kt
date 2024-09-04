@@ -59,7 +59,7 @@ public object SharedAnalytics {
 
     private lateinit var onEmit: onEmitFunction
 
-    @JsName("init")
+    @JsName("initAnalyticsShared")
     public fun init(supplierOrigin: String, version: String, onEmit: onEmitFunction) {
 
         if (alreadyInitialized) return
