@@ -41,7 +41,8 @@ jobs:
           # Build dist folder
           cp build/kotlin-webpack/js/productionExecutable/analyticsShared.js dist/analyticsShared.js
           # Change package.json version
-          sed "s/\"0.0.0\"/\"${VERSION}\"/" build/processedResources/js/main/package.json > dist/package.json
+          echo Using version: ${version}
+          sed "s/\"0.0.0\"/\"${version}\"/" build/processedResources/js/main/package.json > dist/package.json
           cd ..
 
       - name: Test with Gradle
