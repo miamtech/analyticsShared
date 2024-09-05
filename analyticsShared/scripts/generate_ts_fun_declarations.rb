@@ -1,12 +1,7 @@
 require 'fileutils'
 
-# Helper method to convert a string to PascalCase, preserving inner capitalization
-def camelize(str)
-  str.gsub(/(?:^|_)([a-z])/) { $1.upcase }
-end
-
-# Method to generate TypeScript interface and function based on a Kotlin function signature
-def generate_ts_interface(kotlin_signature, js_function_name, output_file_path)
+# Method to generate TypeScript function declaration based on a Kotlin function signature
+def generate_ts_fun_declaration(kotlin_signature, js_function_name, output_file_path)
   # Split parameters and process each one
   params_string = kotlin_signature.match(/\((.*?)\)/m)[1] # 'm' flag to match across multiple lines
   params = params_string.split(",").map(&:strip)
@@ -82,7 +77,7 @@ def process_kotlin_files(directory, output_folder)
         if function_line =~ /fun (\w+)\s*\(/
           function_name = function_line.match(/fun (\w+)/)[1]
           puts "Found function: #{function_name} with JsName: #{js_name} in #{file_path}"
-          generate_ts_interface(function_line, js_name, output_file_path)
+          generate_ts_fun_declaration(function_line, js_name, output_file_path)
         else
           puts "No function found after @JsName in #{file_path}"
         end

@@ -59,8 +59,7 @@ public object SharedAnalytics {
 
     private lateinit var onEmit: onEmitFunction
 
-    @JsName("initAnalyticsShared")
-    public fun init(supplierOrigin: String, version: String, onEmit: onEmitFunction) {
+    fun init(supplierOrigin: String, version: String, onEmit: onEmitFunction) {
 
         if (alreadyInitialized) return
         domain.value = supplierOrigin
