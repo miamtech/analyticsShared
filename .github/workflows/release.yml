@@ -35,9 +35,9 @@ jobs:
           # Build JS output
           ./gradlew :analyticsShared:jsBrowserProductionWebpack
           cd analyticsShared
-          # Create TS interfaces
-          ruby scripts/generate_ts_data_classes.rb
-          ruby scripts/generate_ts_interface.rb
+          # Create TS declaration files
+          ruby scripts/generate_ts_fun_declarations.rb
+          ruby scripts/generate_ts_types_declarations.rb
           # Build dist folder
           cp build/kotlin-webpack/js/productionExecutable/analyticsShared.js dist/analyticsShared.js
           # Change package.json version

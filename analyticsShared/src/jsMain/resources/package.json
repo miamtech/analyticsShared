@@ -2,5 +2,11 @@
   "name": "mealz-shared-analytics",
   "version": "0.0.0",
   "author": "Mealz",
-  "license": "GNU GPLv3"
+  "license": "GNU GPLv3",
+  "main": "analyticsShared.js",
+  "types": "analyticsShared.d.ts",
+  "files": [
+    "analyticsShared.js",
+    "analyticsShared.d.ts"
+  ]
 }
