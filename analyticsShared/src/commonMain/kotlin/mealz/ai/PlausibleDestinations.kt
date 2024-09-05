@@ -1,4 +1,4 @@
-package mealz.ai
+package ai.mealz.analytics
 
 internal enum class PlausibleDestinations(val plausiblePath: String) {
     // -------------------------------- PAGE VIEW ---------------------------------------------
