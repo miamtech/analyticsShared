@@ -9,7 +9,7 @@ import kotlin.js.JsName
 @JsName("PlausibleEvent")
 data class PlausibleEvent(
     val name: String,
-    val path: String,
+    val url: String,
     val domain: String,
     val props: PlausibleProps
 )
