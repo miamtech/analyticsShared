@@ -1,8 +1,8 @@
-package mealz.ai.events
+package ai.mealz.analytics.events
 
-import mealz.ai.PlausibleDestinations
-import mealz.ai.PlausibleProps
-import mealz.ai.SharedAnalytics
+import ai.mealz.analytics.PlausibleDestinations
+import ai.mealz.analytics.PlausibleProps
+import ai.mealz.analytics.SharedAnalytics
 import kotlin.js.JsExport
 import kotlin.js.JsName
 
