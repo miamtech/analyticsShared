@@ -1,4 +1,4 @@
-package mealz.ai
+package ai.mealz.analytics
 
 import kotlinx.serialization.Serializable
 import kotlin.js.JsExport
@@ -9,7 +9,7 @@ import kotlin.js.JsName
 @JsName("PlausibleEvent")
 data class PlausibleEvent(
     val name: String,
-    val url: String,
+    val path: String,
     val domain: String,
     val props: PlausibleProps
 )

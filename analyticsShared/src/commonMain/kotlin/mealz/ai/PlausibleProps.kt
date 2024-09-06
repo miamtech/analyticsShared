@@ -1,4 +1,4 @@
-package mealz.ai
+package ai.mealz.analytics
 
 import kotlinx.serialization.Serializable
 import kotlin.js.JsExport
