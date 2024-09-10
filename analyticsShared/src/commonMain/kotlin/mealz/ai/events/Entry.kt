@@ -11,11 +11,11 @@ import kotlin.js.JsName
 fun sendEntryAddEvent(
     path: String,
     entryName: String,
-    recipeId: String,
     itemId: String,
     extItemId: String,
     itemEAN: String,
-    productQuantity: String
+    productQuantity: String,
+    recipeId: String?
 ) {
     SharedAnalytics.buildAndSendPlausibleRequest(
         PlausibleDestinations.BASKET_ENTRY_ADD.plausiblePath,
@@ -36,11 +36,11 @@ fun sendEntryAddEvent(
 fun sendEntryDeleteEvent(
     path: String,
     entryName: String,
-    recipeId: String,
     itemId: String,
     extItemId: String,
     itemEAN: String,
-    productQuantity: String
+    productQuantity: String,
+    recipeId: String?
 ) {
     SharedAnalytics.buildAndSendPlausibleRequest(
         PlausibleDestinations.BASKET_ENTRY_DELETE.plausiblePath,
@@ -61,7 +61,6 @@ fun sendEntryDeleteEvent(
 fun sendEntryReplaceEvent(
     path: String,
     entryName: String,
-    recipeId: String,
     newItemId: String,
     newItemExtId: String,
     newItemEAN: String,
@@ -69,7 +68,8 @@ fun sendEntryReplaceEvent(
     oldItemExtId: String,
     oldItemEAN: String,
     productQuantity: String,
-    searchTerm: String?
+    searchTerm: String?,
+    recipeId: String?
 ) {
     SharedAnalytics.buildAndSendPlausibleRequest(
         PlausibleDestinations.BASKET_ENTRY_REPLACE.plausiblePath,
@@ -94,10 +94,11 @@ fun sendEntryReplaceEvent(
 fun sendEntryChangeQuantityEvent(
     path: String,
     entryName: String,
-    recipeId: String,
     itemId: String,
     extItemId: String,
-    itemEAN: String
+    itemEAN: String,
+    productQuantity: String,
+    recipeId: String?
 ) {
     SharedAnalytics.buildAndSendPlausibleRequest(
         PlausibleDestinations.BASKET_ENTRY_CHANGE_QUANTITY.plausiblePath,
@@ -107,6 +108,7 @@ fun sendEntryChangeQuantityEvent(
             recipe_id = recipeId,
             item_id = itemId,
             ext_item_id = extItemId,
+            product_quantity = productQuantity,
             item_ean = itemEAN
         )
     )

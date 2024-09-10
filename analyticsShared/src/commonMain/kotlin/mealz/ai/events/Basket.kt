@@ -17,8 +17,8 @@ fun sendBasketConfirmedEvent(
     basketId: String,
     recipeCount: String,
     mealzProducts: String,
-    totalProducts: String,
-    clientOrderId: String
+    totalProducts: String?,
+    clientOrderId: String?
 ) {
     SharedAnalytics.buildAndSendPlausibleRequest(
         PlausibleDestinations.BASKET_CONFIRMED.plausiblePath,

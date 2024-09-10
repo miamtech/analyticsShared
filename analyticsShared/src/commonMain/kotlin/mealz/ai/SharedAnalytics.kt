@@ -29,6 +29,8 @@ object SharedAnalytics {
 
     private val domain: MutableStateFlow<String?> = MutableStateFlow(null)
     private val version: MutableStateFlow<String> = MutableStateFlow("")
+    private val affiliate: MutableStateFlow<String?> = MutableStateFlow(null)
+    private val abTestKey: MutableStateFlow<String?> = MutableStateFlow(null)
 
     private val alreadyInitialized: Boolean
         get() = !domain.value.isNullOrBlank() && version.value.isNotBlank()
@@ -52,8 +54,16 @@ object SharedAnalytics {
         println("Analytics init for ${this.domain.value}")
     }
 
+    fun setAffiliate(affiliate: String) {
+        this.affiliate.value = affiliate
+    }
+
+    fun setABTestKey(abTestKey: String) {
+        this.abTestKey.value = abTestKey
+    }
+
     private suspend fun HttpClient.postEvent(event: PlausibleEvent) {
-        println("will send event $event to $PLAUSIBLE_URL")
+        println("will send event $event to $PLAUSIBLE_URL") // TODO: log and log levels task
         post(PLAUSIBLE_URL) {
             contentType(ContentType.Application.Json)
             setBody(event)
@@ -62,8 +72,13 @@ object SharedAnalytics {
 
     internal fun buildAndSendPlausibleRequest(eventType: String, path: String, props: PlausibleProps) {
         domain.value?.let { domain ->
-            val propsWithVersionAndDevice = props.copy(version = version.value, device = getPlatform().name)
-            val fullPath = "miam/$path"
+            val propsWithVersionAndDevice = props.copy(
+                version = version.value,
+                platform = getPlatform().name,
+                abTestKey = abTestKey.value,
+                affiliate = affiliate.value
+            )
+            val fullPath = "miam/$path" // TODO: path logic task
             val event = PlausibleEvent(
                 eventType,
                 fullPath,
