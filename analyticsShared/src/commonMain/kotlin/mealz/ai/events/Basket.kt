@@ -20,7 +20,7 @@ fun sendBasketConfirmedEvent(
     totalProducts: String?,
     clientOrderId: String?
 ) {
-    SharedAnalytics.buildAndSendPlausibleRequest(
+    SharedAnalytics.sendPlausibleRequest(
         PlausibleDestinations.BASKET_CONFIRMED.plausiblePath,
         path,
         PlausibleProps(

@@ -9,7 +9,7 @@ import kotlin.js.JsName
 @JsExport
 @JsName("sendSearchEvent")
 fun sendSearchEvent(path: String, searchTerm: String) {
-    SharedAnalytics.buildAndSendPlausibleRequest(
+    SharedAnalytics.sendPlausibleRequest(
         PlausibleDestinations.SEARCH.plausiblePath,
         path,
         PlausibleProps(search_term = searchTerm)

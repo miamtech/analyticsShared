@@ -17,7 +17,7 @@ fun sendEntryAddEvent(
     productQuantity: String,
     recipeId: String?
 ) {
-    SharedAnalytics.buildAndSendPlausibleRequest(
+    SharedAnalytics.sendPlausibleRequest(
         PlausibleDestinations.BASKET_ENTRY_ADD.plausiblePath,
         path,
         PlausibleProps(
@@ -42,7 +42,7 @@ fun sendEntryDeleteEvent(
     productQuantity: String,
     recipeId: String?
 ) {
-    SharedAnalytics.buildAndSendPlausibleRequest(
+    SharedAnalytics.sendPlausibleRequest(
         PlausibleDestinations.BASKET_ENTRY_DELETE.plausiblePath,
         path,
         PlausibleProps(
@@ -71,7 +71,7 @@ fun sendEntryReplaceEvent(
     searchTerm: String?,
     recipeId: String?
 ) {
-    SharedAnalytics.buildAndSendPlausibleRequest(
+    SharedAnalytics.sendPlausibleRequest(
         PlausibleDestinations.BASKET_ENTRY_REPLACE.plausiblePath,
         path,
         PlausibleProps(
@@ -100,7 +100,7 @@ fun sendEntryChangeQuantityEvent(
     productQuantity: String,
     recipeId: String?
 ) {
-    SharedAnalytics.buildAndSendPlausibleRequest(
+    SharedAnalytics.sendPlausibleRequest(
         PlausibleDestinations.BASKET_ENTRY_CHANGE_QUANTITY.plausiblePath,
         path,
         PlausibleProps(

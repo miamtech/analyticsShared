@@ -20,7 +20,7 @@ fun sendPaymentStartedEvent(
     totalProducts: String?,
     clientOrderId: String?
 ) {
-    SharedAnalytics.buildAndSendPlausibleRequest(
+    SharedAnalytics.sendPlausibleRequest(
         PlausibleDestinations.PAYMENT_STARTED.plausiblePath,
         path,
         PlausibleProps(
@@ -51,7 +51,7 @@ fun sendPaymentConfirmedEvent(
     totalProducts: String?,
     clientOrderId: String?
 ) {
-    SharedAnalytics.buildAndSendPlausibleRequest(
+    SharedAnalytics.sendPlausibleRequest(
         PlausibleDestinations.PAYMENT_CONFIRMED.plausiblePath,
         path,
         PlausibleProps(

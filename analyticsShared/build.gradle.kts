@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile
 import org.jetbrains.kotlin.gradle.targets.js.ir.JsIrBinary
 
 plugins {
@@ -21,23 +20,21 @@ kotlin {
         }
     }
 
-    jvm()
-
     js(IR) {
         useEsModules()
         generateTypeScriptDefinitions()
         browser {
             webpackTask {
                 mainOutputFileName = "analyticsShared.js"
-                sourceMaps = true
+                sourceMaps = false
             }
             commonWebpackConfig {
-                sourceMaps = true
+                sourceMaps = false
             }
         }
         binaries.withType<JsIrBinary>().all {
             this.linkTask.configure {
-                kotlinOptions { sourceMap = true }
+                kotlinOptions { sourceMap = false }
             }
         }
         binaries.executable()
@@ -56,12 +53,6 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.kotlinx.coroutines.test)
-            implementation(libs.kotlinx.serialization.json)
-            implementation(libs.ktor.core)
-            implementation(libs.ktor.client.content.negotiation)
-            implementation(libs.ktor.serialization.kotlinx.json)
         }
 
         commonTest.dependencies {
@@ -70,20 +61,16 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.kotlinx.coroutines.android)
-            implementation(libs.ktor.client.okhttp)
-        }
-
-        jvmMain.dependencies {
-            implementation(libs.kotlinx.coroutines.swing)
-            implementation(libs.ktor.client.okhttp)
+            implementation(libs.ktor.core)
+            implementation(libs.gson)
         }
 
         jsMain.dependencies {
-            implementation(libs.ktor.client.js)
         }
 
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+            implementation(libs.ktor.core)
         }
 
         all {
@@ -98,10 +85,14 @@ kotlin {
         compilations["main"].compilerOptions.options.freeCompilerArgs.add("-Xexport-kdoc")
     }
 
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
+
 }
 
 android {
-    namespace = "mealz.ai"
+    namespace = "ai.mealz.analytics"
     compileSdk = 34
 
     defaultConfig {
