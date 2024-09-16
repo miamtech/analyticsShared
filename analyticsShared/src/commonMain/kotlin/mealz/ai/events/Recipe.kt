@@ -27,6 +27,16 @@ fun sendRecipeDisplayEvent(path: String, recipeId: String, categoryId: String?) 
 }
 
 @JsExport
+@JsName("sendRecipeAddEvent")
+fun sendRecipeAddEvent(path: String, recipeId: String) {
+    SharedAnalytics.buildAndSendPlausibleRequest(
+        PlausibleDestinations.RECIPE_ADD.plausiblePath,
+        path,
+        PlausibleProps(recipe_id = recipeId)
+    )
+}
+
+@JsExport
 @JsName("sendRecipeRemoveEvent")
 fun sendRecipeRemoveEvent(path: String, recipeId: String) {
     SharedAnalytics.buildAndSendPlausibleRequest(

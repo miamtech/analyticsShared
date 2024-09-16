@@ -46,5 +46,7 @@ data class PlausibleProps(
     val time_passed: String? = null,
     // Global
     val version: String? = null,
-    val device: String? = null
+    val platform: String? = null,
+    val affiliate: String? = null,
+    val abTestKey: String? = null
 )
