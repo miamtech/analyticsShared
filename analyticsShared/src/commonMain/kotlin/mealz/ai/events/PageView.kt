@@ -9,7 +9,7 @@ import kotlin.js.JsName
 @JsExport
 @JsName("sendPageViewEvent")
 fun sendPageViewEvent(path: String) {
-    SharedAnalytics.buildAndSendPlausibleRequest(
+    SharedAnalytics.sendPlausibleRequest(
         PlausibleDestinations.PAGEVIEW.plausiblePath,
         path,
         PlausibleProps()

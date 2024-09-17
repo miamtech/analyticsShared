@@ -5,18 +5,6 @@ import kotlin.js.JsName
 
 @JsExport
 @JsName("initSharedAnalytics")
-fun initSharedAnalytics(domain: String, version: String, onEmit: onEmitFunction) {
-    SharedAnalytics.init(domain, version, onEmit)
-}
-
-@JsExport
-@JsName("setAnalyticsABTestKey")
-fun setABTestKey(abTestKey: String) {
-    SharedAnalytics.setABTestKey(abTestKey)
-}
-
-@JsExport
-@JsName("setAnalyticsAffiliate")
-fun setAffiliate(affiliate: String) {
-    SharedAnalytics.setAffiliate(affiliate)
+fun initSharedAnalytics(domain: String, version: String, abTestKey: String, affiliate: String, onEmit: onEmitFunction) {
+    SharedAnalytics.initSharedAnalytics(domain, version, abTestKey, affiliate, onEmit)
 }
