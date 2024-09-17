@@ -1,10 +1,8 @@
 package ai.mealz.analytics
 
-import kotlinx.serialization.Serializable
 import kotlin.js.JsExport
 import kotlin.js.JsName
 
-@Serializable
 @JsExport
 @JsName("PlausibleProps")
 data class PlausibleProps(
@@ -46,5 +44,7 @@ data class PlausibleProps(
     val time_passed: String? = null,
     // Global
     val version: String? = null,
-    val device: String? = null
+    val platform: String? = null,
+    val affiliate: String? = null,
+    val abTestKey: String? = null
 )

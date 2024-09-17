@@ -9,7 +9,7 @@ import kotlin.js.JsName
 @JsExport
 @JsName("sendPlannerStartedEvent")
 fun sendPlannerStartedEvent(path: String, budget: String, guests: String, recipeCount: String) {
-    SharedAnalytics.buildAndSendPlausibleRequest(
+    SharedAnalytics.sendPlausibleRequest(
         PlausibleDestinations.PLANNER_STARTED.plausiblePath,
         path,
         PlausibleProps(budget = budget, guests = guests, recipe_count = recipeCount)
@@ -19,7 +19,7 @@ fun sendPlannerStartedEvent(path: String, budget: String, guests: String, recipe
 @JsExport
 @JsName("sendPlannerRecipeDeletedEvent")
 fun sendPlannerRecipeDeletedEvent(path: String, recipeId: String) {
-    SharedAnalytics.buildAndSendPlausibleRequest(
+    SharedAnalytics.sendPlausibleRequest(
         PlausibleDestinations.PLANNER_RECIPE_DELETED.plausiblePath,
         path,
         PlausibleProps(recipe_id = recipeId)
@@ -37,7 +37,7 @@ fun sendPlannerConfirmEvent(
     usesCount: String,
     timePassed: String
 ) {
-    SharedAnalytics.buildAndSendPlausibleRequest(
+    SharedAnalytics.sendPlausibleRequest(
         PlausibleDestinations.PLANNER_CONFIRM.plausiblePath,
         path,
         PlausibleProps(
@@ -60,7 +60,7 @@ fun sendPlannerFinalizeEvent(
     recipeCount: String,
     guests: String
 ) {
-    SharedAnalytics.buildAndSendPlausibleRequest(
+    SharedAnalytics.sendPlausibleRequest(
         PlausibleDestinations.PLANNER_FINALIZE.plausiblePath,
         path,
         PlausibleProps(

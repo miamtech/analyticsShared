@@ -9,7 +9,7 @@ import kotlin.js.JsName
 @JsExport
 @JsName("sendPointOfSaleSelectedEvent")
 fun sendPointOfSaleSelectedEvent(path: String, pointOfSaleName: String, pointOfSaleId: String) {
-    SharedAnalytics.buildAndSendPlausibleRequest(
+    SharedAnalytics.sendPlausibleRequest(
         PlausibleDestinations.POINT_OF_SALE_SELECTED.plausiblePath,
         path,
         PlausibleProps(pos_id = pointOfSaleId, pos_name = pointOfSaleName)

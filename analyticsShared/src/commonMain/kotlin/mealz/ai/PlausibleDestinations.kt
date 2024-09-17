@@ -8,6 +8,7 @@ internal enum class PlausibleDestinations(val plausiblePath: String) {
     // ---------------------------------- RECIPE ----------------------------------------------
     RECIPE_SHOW("recipe.show"),
     RECIPE_DISPLAY("recipe.display"),
+    RECIPE_ADD("recipe.add"),
     RECIPE_REMOVE("recipe.remove"),
     RECIPE_CHANGE_GUESTS("recipe.change-guests"),
     RECIPE_LIKE("recipe.like"),
