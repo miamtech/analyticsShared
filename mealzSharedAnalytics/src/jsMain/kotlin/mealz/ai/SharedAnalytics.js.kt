@@ -3,10 +3,9 @@ package ai.mealz.analytics
 import kotlinx.browser.window
 import org.w3c.fetch.RequestInit
 
-actual object SharedAnalytics: AbstractSharedAnalytics() {
+actual object SharedAnalytics : AbstractSharedAnalytics() {
 
     override fun sendRequest(event: PlausibleEvent) {
-        println("will send event $event to $PLAUSIBLE_URL") // TODO: log and log levels task
         window.fetch(
             PLAUSIBLE_URL,
             init = RequestInit(
