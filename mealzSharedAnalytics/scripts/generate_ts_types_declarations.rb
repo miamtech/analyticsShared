@@ -52,7 +52,7 @@ def process_kotlin_files(directory, output_folder)
   FileUtils.mkdir_p(output_folder)
 
   # Define the output file path
-  output_file_path = File.join(output_folder, "analyticsShared.d.ts")
+  output_file_path = File.join(output_folder, "main.d.ts")
 
   Dir.glob(File.join(directory, '**/*.kt')).each do |file_path|
     puts "Processing file: #{file_path}"
@@ -83,8 +83,8 @@ def process_kotlin_files(directory, output_folder)
 end
 
 # Define input directory and output directory
-input_directory = File.expand_path('../../analyticsShared/src/commonMain/kotlin/mealz/ai', __dir__)
-output_directory = File.expand_path('../../analyticsShared/dist', __dir__)
+input_directory = File.expand_path('../../mealzSharedAnalytics/src/commonMain/kotlin/mealz/ai', __dir__)
+output_directory = File.expand_path('../../mealzSharedAnalytics/dist', __dir__)
 
 # Process the Kotlin files to generate TypeScript interfaces
 process_kotlin_files(input_directory, output_directory)

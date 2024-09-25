@@ -1,0 +1,12 @@
+{
+  "name": "mealz-shared-analytics",
+  "version": "##VERSION##",
+  "author": "Mealz",
+  "license": "GNU GPLv3",
+  "main": "main.js",
+  "types": "main.d.ts",
+  "files": [
+    "main.js",
+    "main.d.ts"
+  ]
+}

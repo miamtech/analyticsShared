@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 import org.jetbrains.kotlin.gradle.targets.js.ir.JsIrBinary
 
 plugins {
@@ -9,6 +10,12 @@ plugins {
 
 group = "ai.mealz.analytics"
 version = "##VERSION##"
+description = "Mealz Shared Analytics"
+
+// if you're using XCode 15 or after, you will need to set
+// export MODERN_XCODE_LINKER=true
+// in your CLI before running ./gradlew clean && ./gradlew assembleXCFramework
+val isModernXcodeLinker = System.getenv("MODERN_XCODE_LINKER")?.toBoolean() ?: false
 
 kotlin {
     androidTarget {
@@ -20,12 +27,13 @@ kotlin {
         }
     }
 
+    // TODO: try to build with wasmJs
     js(IR) {
         useEsModules()
         generateTypeScriptDefinitions()
         browser {
             webpackTask {
-                mainOutputFileName = "analyticsShared.js"
+                mainOutputFileName = "main.js"
                 sourceMaps = false
             }
             commonWebpackConfig {
@@ -40,14 +48,17 @@ kotlin {
         binaries.executable()
     }
 
+    val xcf = XCFramework()
     listOf(
         iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "analyticsShared"
+            baseName = "mealzSharedAnalytics"
             isStatic = true
+            if (isModernXcodeLinker) linkerOpts += "-ld64"
+            xcf.add(this)
         }
     }
 

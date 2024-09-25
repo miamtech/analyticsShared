@@ -1,5 +1,5 @@
-rootProject.name = "verify-analytics"
-include(":analyticsShared")
+rootProject.name = "mealz-shared-analytics"
+include(":mealzSharedAnalytics")
 includeBuild("convention-plugins")
 
 pluginManagement {
