@@ -1,0 +1,40 @@
+name: On Pull Requests
+
+on:
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: self-hosted
+    env:
+      ANDROID_HOME: /Users/miam/Library/Android/sdk
+    if: github.event.pull_request.draft == false && (startsWith(github.head_ref, 'feature') || startsWith(github.head_ref, 'fix') || startsWith(github.head_ref, 'hotfix'))
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+
+      - name: Run Android Lint
+        run: ./gradlew lint
+
+      - name: Test with Gradle
+        run: ./gradlew alltest
+
+      - name: Build iOS Gradle
+        run: ./gradlew assembleXCFramework
+
+      - name: Build Android Gradle
+        run: ./gradlew assembleRelease
+
+      - name: Build JS Gradle
+        run: ./gradlew jsBrowserProductionWebpack
+
+      - name: Check JS file size
+        run: |
+          cd mealzSharedAnalytics/build/kotlin-webpack/js/productionExecutable
+          export jsFileSize=$(du -k main.js | sed 's/[^0-9]//g')
+          test $jsFileSize -lt 50
