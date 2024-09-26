@@ -89,7 +89,6 @@ end
 
 lane :updateRelease do |options|
     version = options[:version]
-    ci_fastlane = ENV['CI_FASTLANE']
 
     if ENV["environment"] == "release"
         git_clone(

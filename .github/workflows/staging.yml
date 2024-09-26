@@ -1,0 +1,46 @@
+name: On Pull Request (release to main)
+
+on:
+  create:
+    branches:
+      - release/**
+
+jobs:
+  build:
+    runs-on: self-hosted
+    env:
+      ANDROID_HOME: /Users/miam/Library/Android/sdk
+    # if: startsWith(github.head_ref, 'release/')
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: "temurin"
+      - name: Extract version from branch name
+        id: extract_version
+        run: |
+          # Extract the branch name from GITHUB_REF
+          BRANCH_NAME="${GITHUB_REF_NAME}"
+          
+          # Use regex to extract the version number (assuming format like release/x.y.z)
+          if [[ "$BRANCH_NAME" =~ release/([0-9]+\.[0-9]+\.[0-9]+) ]]; then
+            VERSION="${BASH_REMATCH[1]}"
+            echo "Version extracted: $VERSION"
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "No version number found in branch name"
+            exit 1
+          fi
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+
+      - name: Test with Gradle
+        run: ./gradlew test
+
+      #     TODO: is npm mealz-shared-analytics-uat necessary ?
+
+      - name: fastlane release
+        run: fastlane release version:${{ steps.extract_version.outputs.version }} env:staging
