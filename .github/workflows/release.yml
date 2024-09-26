@@ -32,18 +32,8 @@ jobs:
 
       - name: Build dist folder
         run: |
-          # Build JS output
-          ./gradlew jsBrowserProductionWebpack
-          cd mealzSharedAnalytics
-          # Create TS declaration files
-          ruby scripts/generate_ts_fun_declarations.rb
-          ruby scripts/generate_ts_types_declarations.rb
-          # Build dist folder
-          cp build/kotlin-webpack/js/productionExecutable/main.js dist/main.js
-          # Change package.json version
           echo Using version: ${{ steps.extract_version.outputs.version }}
-          sed "s/\"##VERSION##\"/\"${{ steps.extract_version.outputs.version }}\"/" build/processedResources/js/main/package.json > dist/package.json
-          cd ..
+          make js VERSION=${{ steps.extract_version.outputs.version }} ENV=prod
 
       - name: Test with Gradle
         run: ./gradlew test -Pstaging=true

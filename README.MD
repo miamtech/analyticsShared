@@ -2,7 +2,13 @@
 
 Share analytics between Mealz projects
 
-### Build platform artifacts
+## Build
+
+### Using Makefile
+
+You can run `make` to build every platform, you also can specify `make <js|ios|android>`.
+
+### Using gradle
 
 #### Android aar
 
@@ -12,7 +18,7 @@ Share analytics between Mealz projects
 #### iOS Framework
 
 - Run `./gradlew assembleXCFramework`
-- Output: `/mealzSharedAnalytics/build/bin/iosArm64/releaseFramework/mealzSharedAnalytics.framework`
+- Output: `/mealzSharedAnalytics/build/XCFrameworks/release/mealzSharedAnalytics.xcframework`
 
 #### JS file
 
