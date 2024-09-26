@@ -1,11 +1,7 @@
 //Publishing your Kotlin Multiplatform library to Maven Central
 //https://dev.to/kotlin/how-to-build-and-publish-a-kotlin-multiplatform-library-going-public-4a8k
 
-import org.gradle.api.publish.maven.MavenPublication
-import org.gradle.api.tasks.bundling.Jar
-import org.gradle.kotlin.dsl.`maven-publish`
-import org.gradle.kotlin.dsl.signing
-import java.util.*
+import java.util.Properties
 
 plugins {
     id("maven-publish")
@@ -61,14 +57,14 @@ publishing {
 
         // Provide artifacts information requited by Maven Central
         pom {
-            name.set("verify-analytics")
-            description.set("Kotlin Multiplatform library")
+            name.set("mealz-shared-analytics")
+            description.set("Share analytics between Mealz projects")
             //url.set("") todo
 
             licenses {
                 license {
-                    name.set("MIT")
-                    url.set("https://opensource.org/licenses/MIT")
+                    name.set("GNU GPLv3")
+                    url.set("https://www.gnu.org/licenses/")
                 }
             }
             developers {
@@ -87,7 +83,7 @@ publishing {
 
 // Signing artifacts. Signing.* extra properties values will be used
 signing {
-    if (getExtraString("signing.keyId") != null) {
+    if (getExtraString("signing.keyId")!=null) {
         sign(publishing.publications)
     }
 }

@@ -106,8 +106,7 @@ lane :updateRelease do |options|
     # Android
     sh("mkdir -p ../../releaseMealz/ai/mealz/analytics/mealz-shared-analytics/#{version}")
     sh("cp -R ../mealzSharedAnalytics/build/outputs/aar/mealzSharedAnalytics-release.aar ../../releaseMealz/ai/mealz/analytics/mealz-shared-analytics/#{version}/mealz-shared-analytics-#{version}.aar")
-    sh("sed \"s/##VERSION##/#{version}/g\" ../mealzSharedAnalytics/build/publications/androidRelease/pom-default.xml > ../../releaseMealz/ai/mealz/analytics/mealz-shared-analytics/#{version}/mealz-shared-analytics-#{version}.pom")
-    sh("sed \"s/mealzSharedAnalytics-android/mealz-shared-analytics/g\" ../mealzSharedAnalytics/build/outputs/pom-default.xml > ../../releaseMealz/ai/mealz/analytics/mealz-shared-analytics/#{version}/mealz-shared-analytics-#{version}.pom")
+    sh("sed \"s/##VERSION##/#{version}/g\" ../mealzSharedAnalytics/build/publications/androidRelease/pom-default.xml | sed \"s/mealzSharedAnalytics-android/mealz-shared-analytics/g\" > ../../releaseMealz/ai/mealz/analytics/mealz-shared-analytics/#{version}/mealz-shared-analytics-#{version}.pom")
 
     Dir.chdir("../../releaseMealz") do
         sh("git checkout main")
