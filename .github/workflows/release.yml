@@ -47,7 +47,4 @@ jobs:
           npm publish
 
       - name: fastlane release
-        env:
-          CI_FASTLANE: ${{ secrets.ci_fastlane }}
-          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN_STAGING }}
         run: fastlane release version:${{ steps.extract_version.outputs.version }} env:release
