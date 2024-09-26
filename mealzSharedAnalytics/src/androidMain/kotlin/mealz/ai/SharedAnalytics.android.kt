@@ -1,5 +1,6 @@
 package ai.mealz.analytics
 
+import ai.mealz.analytics.handler.LogHandler
 import com.google.gson.Gson
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.DefaultRequest
@@ -12,11 +13,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-actual object SharedAnalytics: AbstractSharedAnalytics() {
+actual object SharedAnalytics : AbstractSharedAnalytics() {
     private val gson = Gson()
 
     private val coroutineHandler = CoroutineExceptionHandler { _, exception ->
-        println("Mealz error in Analytics $exception ${exception.stackTraceToString()}")
+        LogHandler.error("Mealz error in Analytics $exception ${exception.stackTraceToString()}")
     }
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO + coroutineHandler)
 
@@ -25,7 +26,7 @@ actual object SharedAnalytics: AbstractSharedAnalytics() {
     }
 
     override fun sendRequest(event: PlausibleEvent) {
-        println("will send event $event to $PLAUSIBLE_URL") // TODO: log and log levels task
+        LogHandler.info("Will send event $event to $PLAUSIBLE_URL")
         coroutineScope.launch {
             httpClient.post(PLAUSIBLE_URL) {
                 contentType(ContentType.Application.Json)
@@ -40,5 +41,6 @@ actual object SharedAnalytics: AbstractSharedAnalytics() {
 
     actual fun initSharedAnalytics(domain: String, version: String, abTestKey: String, affiliate: String, onEmit: onEmitFunction) {
         super.init(domain, version, abTestKey, affiliate, onEmit)
+        LogHandler.info("Analytics init for $domain")
     }
 }
