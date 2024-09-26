@@ -49,7 +49,7 @@ def process_kotlin_files(directory, output_folder)
   FileUtils.mkdir_p(output_folder)
 
   # Define the output file path
-  output_file_path = File.join(output_folder, "analyticsShared.d.ts")
+  output_file_path = File.join(output_folder, "main.d.ts")
 
   # Create the empty file if it doesn't exist
   File.open(output_file_path, 'w') do |file|
@@ -87,8 +87,8 @@ def process_kotlin_files(directory, output_folder)
 end
 
 # Define input directory and output directory
-input_directory = File.expand_path('../../analyticsShared/src/commonMain/kotlin/mealz/ai', __dir__)
-output_directory = File.expand_path('../../analyticsShared/dist', __dir__)
+input_directory = File.expand_path('../../mealzSharedAnalytics/src/commonMain/kotlin/mealz/ai', __dir__)
+output_directory = File.expand_path('../../mealzSharedAnalytics/dist', __dir__)
 
 # Process the Kotlin files to generate TypeScript files
 process_kotlin_files(input_directory, output_directory)
