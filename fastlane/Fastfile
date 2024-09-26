@@ -63,8 +63,8 @@ lane :build do |options|
 end
 
 lane :zip do |options|
-    sh("cp ../PrivacyInfo.xcprivacy ../mealzSharedAnalytics/XCFrameworks/release/mealzSharedAnalytics.xcframework/ios-arm64")
-    sh("cp ../PrivacyInfo.xcprivacy ../mealzSharedAnalytics/XCFrameworks/release/mealzSharedAnalytics.xcframework/ios-arm64_x86_64-simulator")
+    sh("cp ../PrivacyInfo.xcprivacy ../mealzSharedAnalytics/build/XCFrameworks/release/mealzSharedAnalytics.xcframework/ios-arm64")
+    sh("cp ../PrivacyInfo.xcprivacy ../mealzSharedAnalytics/build/XCFrameworks/release/mealzSharedAnalytics.xcframework/ios-arm64_x86_64-simulator")
 
     Dir.chdir("../mealzSharedAnalytics/build/XCFrameworks/release") do
         sh("zip -r ../../../../archives/mealzSharedAnalytics.zip mealzSharedAnalytics.xcframework")
