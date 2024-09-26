@@ -42,7 +42,7 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          cd analyticsShared/dist
+          cd mealzSharedAnalytics/dist
           echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}'>.npmrc
           npm publish
 
