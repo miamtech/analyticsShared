@@ -15,3 +15,13 @@ fun sendPointOfSaleSelectedEvent(path: String, pointOfSaleName: String, pointOfS
         PlausibleProps(pos_id = pointOfSaleId, pos_name = pointOfSaleName)
     )
 }
+
+@JsExport
+@JsName("sendSearchStoreEvent")
+fun sendSearchStoreEvent(path: String, searchTerm: String, storesFoundCount: String) {
+    SharedAnalytics.sendPlausibleRequest(
+        PlausibleDestinations.SEARCH_STORE.plausiblePath,
+        path,
+        PlausibleProps(search_term = searchTerm, stores_found_count = storesFoundCount)
+    )
+}
