@@ -7,8 +7,8 @@ plugins {
     id("convention.publication")
 }
 
-group = "mealz.ai"
-version = "1.0"
+group = "ai.mealz.analytics"
+version = "##VERSION##"
 
 kotlin {
     androidTarget {
