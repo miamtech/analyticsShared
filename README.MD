@@ -1,44 +1,28 @@
-# verify-analytics
+# mealz-shared-analytics
 
-Kotlin Multiplatform Library
+Share analytics between Mealz projects
 
-### Publish to MavenCentral
+## Build
 
-1) Registering a Sonatype account as described here: 
-   https://dev.to/kotlin/how-to-build-and-publish-a-kotlin-multiplatform-library-going-public-4a8k
-2) Add developer id, name, email and the project url to
-   `/convention-plugins/src/main/kotlin/convention.publication.gradle.kts`
-3) Add the secrets to `local.properties`:
+### Using Makefile
 
-```
-signing.keyId=...
-signing.password=...
-signing.secretKeyRingFile=...
-ossrhUsername=...
-ossrhPassword=...
-```
+You can run `make` to build every platform, you also can specify `make <js|ios|android>`.
 
-4) Run `./gradlew :analyticsShared:publishAllPublicationsToSonatypeRepository`
-
-### Build platform artifacts
+### Using gradle
 
 #### Android aar
 
-- Run `./gradlew :analyticsShared:assembleRelease`
-- Output: `/analyticsShared/build/outputs/aar/analyticsShared-release.aar`
-
-#### JVM jar
-
-- Run `./gradlew :analyticsShared:jvmJar`
-- Output: `/analyticsShared/build/libs/analyticsShared-jvm-1.0.jar`
+- Run `./gradlew assembleRelease`
+- Output: `/mealzSharedAnalytics/build/outputs/aar/mealzSharedAnalytics-release.aar`
 
 #### iOS Framework
 
-- Run `./gradlew :analyticsShared:linkReleaseFrameworkIosArm64`
-- Output: `/analyticsShared/build/bin/iosArm64/releaseFramework/analyticsShared.framework`
+- Run `./gradlew assembleXCFramework`
+- Output: `/mealzSharedAnalytics/build/XCFrameworks/release/mealzSharedAnalytics.xcframework`
 
 #### JS file
 
-- Run `./gradlew :analyticsShared:jsBrowserProductionWebpack`
-- Output: `/analyticsShared/build/dist/js/productionExecutable/analyticsShared.js`
-# analyticsShared
+- Run `./gradlew jsBrowserProductionWebpack`
+- Output: `/mealzSharedAnalytics/build/dist/js/productionExecutable/mealzSharedAnalytics.js`
+
+# MealzSharedAnalytics

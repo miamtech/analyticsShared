@@ -2,7 +2,7 @@ name: PR Merge to Master or Main
 
 on:
   pull_request:
-    types: [closed]
+    types: [ closed ]
 
 jobs:
   merge-job:
@@ -32,18 +32,8 @@ jobs:
 
       - name: Build dist folder
         run: |
-          # Build JS output
-          ./gradlew :analyticsShared:jsBrowserProductionWebpack
-          cd analyticsShared
-          # Create TS declaration files
-          ruby scripts/generate_ts_fun_declarations.rb
-          ruby scripts/generate_ts_types_declarations.rb
-          # Build dist folder
-          cp build/kotlin-webpack/js/productionExecutable/analyticsShared.js dist/analyticsShared.js
-          # Change package.json version
           echo Using version: ${{ steps.extract_version.outputs.version }}
-          sed "s/\"0.0.0\"/\"${{ steps.extract_version.outputs.version }}\"/" build/processedResources/js/main/package.json > dist/package.json
-          cd ..
+          make js VERSION=${{ steps.extract_version.outputs.version }} ENV=prod
 
       - name: Test with Gradle
         run: ./gradlew test -Pstaging=true
@@ -55,3 +45,9 @@ jobs:
           cd analyticsShared/dist
           echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}'>.npmrc
           npm publish
+
+      - name: fastlane release
+        env:
+          CI_FASTLANE: ${{ secrets.ci_fastlane }}
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN_STAGING }}
+        run: fastlane release version:${{ steps.extract_version.outputs.version }} env:release
