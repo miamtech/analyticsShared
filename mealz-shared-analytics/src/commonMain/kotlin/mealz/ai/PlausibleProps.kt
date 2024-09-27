@@ -3,6 +3,8 @@ package ai.mealz.analytics
 import kotlin.js.JsExport
 import kotlin.js.JsName
 
+/*                 /!\ Must update `SharedAnalytics.ios.kt` too /!\                 */
+
 @JsExport
 @JsName("PlausibleProps")
 data class PlausibleProps(
@@ -45,7 +47,8 @@ data class PlausibleProps(
     val uses_count: String? = null,
     val time_passed: String? = null,
     // Global
-    val version: String? = null,
+    val client_sdk_version: String? = null,
+    val analytics_sdk_version: String? = null,
     val platform: String? = null,
     val affiliate: String? = null,
     val abTestKey: String? = null

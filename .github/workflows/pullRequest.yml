@@ -21,6 +21,17 @@ jobs:
       - name: Run Android Lint
         run: ./gradlew lint
 
+      - name: Verify iOS props
+        run: |
+          # Get the list of changed files
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+
+          # Check if PlausibleProps is changed and SharedAnalytics.ios is not
+          if echo "$CHANGED_FILES" | grep -q 'mealz-shared-analytics/src/commonMain/kotlin/mealz/ai/PlausibleProps.kt' && ! echo "$CHANGED_FILES" | grep -q 'mealz-shared-analytics/src/iosMain/kotlin/mealz/ai/SharedAnalytics.ios.kt'; then
+            echo "Error: PlausibleProps was changed but SharedAnalytics.ios was not updated!"
+            exit 1
+          fi
+
       - name: Test with Gradle
         run: ./gradlew alltest
 
