@@ -64,10 +64,10 @@ fun sendEntryReplaceEvent(
     newItemId: String,
     newItemExtId: String,
     newItemEAN: String,
-    oldItemId: String,
-    oldItemExtId: String,
-    oldItemEAN: String,
     productQuantity: String,
+    oldItemId: String?,
+    oldItemExtId: String?,
+    oldItemEAN: String?,
     searchTerm: String?,
     recipeId: String?
 ) {
