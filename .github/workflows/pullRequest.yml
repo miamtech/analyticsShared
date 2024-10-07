@@ -35,6 +35,6 @@ jobs:
 
       - name: Check JS file size
         run: |
-          cd mealzSharedAnalytics/build/kotlin-webpack/js/productionExecutable
+          cd mealz-shared-analytics/build/kotlin-webpack/js/productionExecutable
           export jsFileSize=$(du -k main.js | sed 's/[^0-9]//g')
           test $jsFileSize -lt 50

@@ -13,16 +13,16 @@ You can run `make` to build every platform, you also can specify `make <js|ios|a
 #### Android aar
 
 - Run `./gradlew assembleRelease`
-- Output: `/mealzSharedAnalytics/build/outputs/aar/mealzSharedAnalytics-release.aar`
+- Output: `/mealz-shared-analytics/build/outputs/aar/mealz-shared-analytics-release.aar`
 
 #### iOS Framework
 
 - Run `./gradlew assembleXCFramework`
-- Output: `/mealzSharedAnalytics/build/XCFrameworks/release/mealzSharedAnalytics.xcframework`
+- Output: `/mealz-shared-analytics/build/XCFrameworks/release/mealz-shared-analytics.xcframework`
 
 #### JS file
 
 - Run `./gradlew jsBrowserProductionWebpack`
-- Output: `/mealzSharedAnalytics/build/dist/js/productionExecutable/mealzSharedAnalytics.js`
+- Output: `/mealz-shared-analytics/build/dist/js/productionExecutable/main.js`
 
 # MealzSharedAnalytics
