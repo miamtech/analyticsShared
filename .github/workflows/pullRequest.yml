@@ -23,8 +23,10 @@ jobs:
 
       - name: Verify iOS props
         run: |
+          git fetch origin $GITHUB_BASE_REF:$GITHUB_BASE_REF
+
           # Get the list of changed files
-          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          CHANGED_FILES=$(git diff --name-only $GITHUB_BASE_REF $GITHUB_SHA)
 
           # Check if PlausibleProps is changed and SharedAnalytics.ios is not
           if echo "$CHANGED_FILES" | grep -q 'mealz-shared-analytics/src/commonMain/kotlin/mealz/ai/PlausibleProps.kt' && ! echo "$CHANGED_FILES" | grep -q 'mealz-shared-analytics/src/iosMain/kotlin/mealz/ai/SharedAnalytics.ios.kt'; then
