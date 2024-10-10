@@ -19,10 +19,10 @@ val isModernXcodeLinker = System.getenv("MODERN_XCODE_LINKER")?.toBoolean() ?: f
 
 kotlin {
     androidTarget {
-        publishLibraryVariants("release")
+        publishLibraryVariants("release", "debug")
         compilations.all {
             kotlinOptions {
-                jvmTarget = "17"
+                jvmTarget = "1.8"
             }
         }
     }
@@ -67,22 +67,26 @@ kotlin {
         }
 
         commonTest.dependencies {
-            implementation(kotlin("test"))
+            api(kotlin("test"))
         }
 
         androidMain.dependencies {
-            implementation(libs.kotlinx.coroutines.android)
-            implementation(libs.ktor.core)
-            implementation(libs.gson)
+            api(libs.kotlinx.coroutines.android)
+            api(libs.ktor.core)
+            api(libs.gson)
         }
 
         jsMain.dependencies {
         }
 
         iosMain.dependencies {
-            implementation(libs.ktor.client.darwin)
-            implementation(libs.ktor.core)
+            api(libs.ktor.client.darwin)
+            api(libs.ktor.core)
         }
+
+        iosArm64()
+        iosX64()
+        iosSimulatorArm64()
 
         all {
             languageSettings.apply {
@@ -110,7 +114,7 @@ android {
         minSdk = 24
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
