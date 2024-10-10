@@ -33,18 +33,24 @@ jobs:
       - name: Build dist folder
         run: |
           echo Using version: ${{ steps.extract_version.outputs.version }}
-          make js VERSION=${{ steps.extract_version.outputs.version }} ENV=prod
+          make js VERSION=${{ steps.extract_version.outputs.version }}
 
       - name: Test with Gradle
-        run: ./gradlew test -Pstaging=true
+        run: ./gradlew test -Pprod=true
+
+      - name: Replace version number
+        run: make replace_version_number VERSION=${{ steps.extract_version.outputs.version }}
 
       - name: npm release
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          cd mealzSharedAnalytics/dist
+          cd mealz-shared-analytics/dist
           echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}'>.npmrc
           npm publish
 
       - name: fastlane release
         run: fastlane release version:${{ steps.extract_version.outputs.version }} env:release
+
+      - name: Restore version
+        run: make restore_version_number

@@ -1,170 +1,101 @@
 ENV["environment"] = "staging"
-ENV["git_project"] = "MealzSharedAnalyticsRelease"
+ENV["git_release_project"] = "releaseMealz"
 
 before_all do |lane, options|
-#  update_fastlane
-#  fastlane_require 'fastlane-plugin-brew'
-  fastlane_require 'fastlane-plugin-git_clone'
+    fastlane_require 'fastlane-plugin-git_clone'
 
-#  install_developer_tools
-#  ENV["MODERN_XCODE_LINKER"] = "true"
+    sh("mkdir -p ../archives")
+    sh("export ANDROID_HOME=~/Library/Android/sdk")
 
-  sh("mkdir -p ../archives")
-  sh("export ANDROID_HOME=~/Library/Android/sdk")
+    ENV["environment"] = options[:env] || "staging"
+    puts ENV["environment"]
 
+    version_check version:options[:version]
+    update_version version:options[:version]
 end
 
 after_all do |lane, options|
-  FastlaneCore::CommandExecutor.execute(
-    command: "rm -r ../archives",
-    print_all: true,
-    error: proc do |error_output|
-        # handle error here
-    end)
-  FastlaneCore::CommandExecutor.execute(
-    command: "rm -r -f ../../#{ENV["git_project"]}",
-    print_all: true,
-    error: proc do |error_output|
-        # handle error here
-    end)
+    FastlaneCore::CommandExecutor.execute(
+        command: "rm -r ../archives",
+        print_all: true,
+        error: proc do |error_output|
+            # handle error here
+        end
+    )
+    revert_version
+end
+
+error do |lane, exception|
+    revert_version
 end
 
 lane :version_check do |options|
     version = options[:version]
     begin
-    sh("
-        REGEX_VERSION='[0-9].[0-9].[0-9]+(-[a-z]*)?$'
-        [[ \"#{version}\" =~ $REGEX_VERSION ]]
-    ")
+        sh("
+            REGEX_VERSION='[0-9].[0-9].[0-9]+(-[a-z]*)?$'
+            [[ \"#{version}\" =~ $REGEX_VERSION ]]
+        ")
     rescue => ex
-    UI.user_error!("Numéro de version invalide, le numéro de version doit respecter le pattern : 1.0.0 ou 1.0.0-alpha")
+        UI.user_error!("Numéro de version invalide, le numéro de version doit respecter le pattern : 1.0.0 ou 1.0.0-alpha")
     end
 end
 
-desc 'Install developer tools'
-lane :install_developer_tools do |options|
-  brew(command: 'install trivy')
+lane :update_version do |options|
+    version = options[:version]
+    sh("sed -i '' \"s/##VERSION##/#{version}/g\" ../mealz-shared-analytics/build.gradle.kts")
 end
 
-lane :check_cve do |options|
-    sh("trivy filesystem .")
+lane :revert_version do |options|
+    sh("git restore ../mealz-shared-analytics/build.gradle.kts")
 end
 
-lane :build do |options|
-    gradle(
-        task: "assembleXCFramework"
-    )
-    gradle(
-        task: "assembleRelease"
-    )
-    gradle(
-        task: "generatePomFileForAndroidReleasePublication"
-    )
-end
-
-lane :zip do |options|
-    sh("cp ../PrivacyInfo.xcprivacy ../mealzSharedAnalytics/build/XCFrameworks/release/mealzSharedAnalytics.xcframework/ios-arm64")
-    sh("cp ../PrivacyInfo.xcprivacy ../mealzSharedAnalytics/build/XCFrameworks/release/mealzSharedAnalytics.xcframework/ios-arm64_x86_64-simulator")
-
-    Dir.chdir("../mealzSharedAnalytics/build/XCFrameworks/release") do
-        sh("zip -r ../../../../archives/mealzSharedAnalytics.zip mealzSharedAnalytics.xcframework")
+lane :fetch_release do |options|
+    if ENV["environment"] == "release"
+        git_clone(
+            git: "git@github.com:miamtech/#{ENV["git_release_project"]}.git",
+            path: "../#{ENV["git_release_project"]}"
+        )
+    else
+        git_clone(
+            git: "git@github.com:MealzStaging/#{ENV["git_release_project"]}.git",
+	        path: "../#{ENV["git_release_project"]}"
+        )
     end
+end
+
+lane :build_and_update_release do |options|
+    if(!Dir.exist? "../../#{ENV["git_release_project"]}")
+        UI.user_error!("git release project does not exist")
+    end
+
+    gradle(
+        task: "publishAllPublicationsToGithubRepository"
+    )
     Dir.chdir("..") do
-        sh("zip -j archives/mealzSharedAnalytics.zip releaseTemplate/LICENSE")
+        sh ("cp -R mealz-shared-analytics/build/release/* ../#{ENV["git_release_project"]}")
     end
 end
 
-lane :podspec do |options|
-    version = options[:version]
-    checksum = sh("swift package compute-checksum ../archives/mealzSharedAnalytics.zip | tr -d '\n' ")
-
-    if ENV["environment"] == "release"
-        sh("sed -e \"s/##VERSION##/#{version}/g\" ../releaseTemplate/MealzSharedAnalytics.podspec > ../archives/MealzSharedAnalytics.podspec")
-        sh("sed -e \"s/##CHECKSUM##/#{checksum}/g\" -e \"s/##VERSION##/#{version}/g\"  ../releaseTemplate/Package.swift > ../archives/Package.swift")
-    else
-        sh("sed -e \"s/##VERSION##/#{version}/g\" ../releaseTemplate/MealzSharedAnalyticsStaging.podspec > ../archives/MealzSharedAnalyticsStaging.podspec")
-        sh("sed -e \"s/##CHECKSUM##/#{checksum}/g\" -e \"s/##VERSION##/#{version}/g\"  ../releaseTemplate/PackageStaging.swift > ../archives/Package.swift")
-    end
-end
-
-lane :updateRelease do |options|
-    version = options[:version]
-
-    if ENV["environment"] == "release"
-        git_clone(
-            git: "git@github.com:miamtech/releaseMealz.git",
-            path: "../releaseMealz"
-        )
-    else
-        git_clone(
-            git: "git@github.com:MealzStaging/releaseMealz.git",
-	    path: "../releaseMealz"
-        )
+lane :push_release do |options|
+    if(!Dir.exist? "../../#{ENV["git_release_project"]}")
+        UI.user_error!("git release project does not exist")
     end
 
-    # Android
-    sh("mkdir -p ../../releaseMealz/ai/mealz/analytics/mealz-shared-analytics/#{version}")
-    sh("cp -R ../mealzSharedAnalytics/build/outputs/aar/mealzSharedAnalytics-release.aar ../../releaseMealz/ai/mealz/analytics/mealz-shared-analytics/#{version}/mealz-shared-analytics-#{version}.aar")
-    sh("sed \"s/##VERSION##/#{version}/g\" ../mealzSharedAnalytics/build/publications/androidRelease/pom-default.xml | sed \"s/mealzSharedAnalytics-android/mealz-shared-analytics/g\" > ../../releaseMealz/ai/mealz/analytics/mealz-shared-analytics/#{version}/mealz-shared-analytics-#{version}.pom")
+    version = options[:version]
 
-    Dir.chdir("../../releaseMealz") do
+    Dir.chdir("../../#{ENV["git_release_project"]}") do
         sh("git checkout main")
         sh("git add ai")
-        sh("git commit -m \"update android release\"")
+        sh("git commit -m \"Analytics #{version}\"")
         sh("git push ")
     end
 
-    sh("rm -R -f ../../releaseMealz")
-
-
-    if ENV["environment"] == "release"
-        git_clone(
-            git: "git@github.com:miamtech/MealzSharedAnalyticsRelease.git",
-            path: "../#{ENV["git_project"]}"
-        )
-    else
-        git_clone(
-            git: "git@github.com:MealzStaging/MealzSharedAnalyticsRelease.git",
-            path: "../#{ENV["git_project"]}"
-        )
-    end
-
-	#iOS
-    sh("cp ../archives/*.podspec ../../#{ENV["git_project"]}/")
-    sh("cp ../archives/Package.swift ../../#{ENV["git_project"]}/Package.swift")
-    sh("cp -R ../archives/*.zip ../../#{ENV["git_project"]}")
-    #sh("cp -R ../LICENSE ../../#{ENV["git_project"]}/LICENSE")
-
-    Dir.chdir("../../#{ENV["git_project"]}") do
-        sh("git checkout -b release/#{version}")
-        sh("git add *.zip")
-        #sh("git add LICENSE")
-        sh("git add Package.swift")
-        sh("git add *.podspec")
-        sh("git commit -m \"update release\"")
-        sh("git push --set-upstream origin release/#{version}")
-
-        sh("git tag #{version}")
-        sh("git push origin --tags")
-    end
-end
-
-lane :pod_update do |options|
-    if ENV["environment"] == "release"
-        sh("pod spec lint ../../#{ENV["git_project"]}/MealzSharedAnalytics.podspec --allow-warnings")
-        pod_push(path: "../#{ENV["git_project"]}/MealzSharedAnalytics.podspec", allow_warnings: true)
-    else
-        sh("pod spec lint ../../#{ENV["git_project"]}/MealzSharedAnalyticsStaging.podspec --allow-warnings")
-        pod_push(path: "../#{ENV["git_project"]}/MealzSharedAnalyticsStaging.podspec", allow_warnings: true)
-    end
+    sh("rm -R -f ../../#{ENV["git_release_project"]}")
 end
 
 lane :release do |options|
-    ENV["environment"] = options[:env] || "staging"
-    puts ENV["environment"]
-    build
-    zip
-    podspec version:options[:version]
-    updateRelease version:options[:version]
-    pod_update
+    fetch_release
+    build_and_update_release
+    push_release version:options[:version]
 end

@@ -1,6 +1,5 @@
 rootProject.name = "mealz-shared-analytics"
-include(":mealzSharedAnalytics")
-includeBuild("convention-plugins")
+include(":mealz-shared-analytics")
 
 pluginManagement {
     repositories {

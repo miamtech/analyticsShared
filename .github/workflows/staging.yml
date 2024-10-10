@@ -38,9 +38,13 @@ jobs:
         uses: gradle/gradle-build-action@v3
 
       - name: Test with Gradle
-        run: ./gradlew test
+        run: ./gradlew test -Pstaging=true
 
-      #     TODO: is npm mealz-shared-analytics-uat necessary ?
+      - name: Replace version number
+        run: make replace_version_number VERSION=${{ steps.extract_version.outputs.version }}
 
       - name: fastlane release
         run: fastlane release version:${{ steps.extract_version.outputs.version }} env:staging
+
+      - name: Restore version
+        run: make restore_version_number

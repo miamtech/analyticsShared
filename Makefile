@@ -1,23 +1,31 @@
 VERSION ?= 0.0.0
-ENV ?= dev
+BUILD ?= local
 
-# Ensure ENV is either 'dev' or 'prod'
-ifeq ($(ENV),dev)
-    BUILD_TYPE = debug
-else ifeq ($(ENV),prod)
-    BUILD_TYPE = release
+# ---------------------------------------- COMMON ----------------------------------------
+
+# If BUILD is release, add replace_version_number to the list of tasks to execute
+ifeq ($(BUILD),release)
+    ALL_TASKS = replace_version_number js ios android restore_version_number
+else ifeq ($(BUILD),local)
+    ALL_TASKS = js ios android
 else
-    $(error Invalid value for ENV: $(ENV). Please use 'dev' or 'prod'.)
+    $(error Invalid value for BUILD: $(BUILD). Please use 'local' or 'release')
 endif
 
-all: js ios android
+all: $(ALL_TASKS)
+
+replace_version_number:
+	sed -i '' 's/"##VERSION##"/"$(VERSION)"/' mealz-shared-analytics/src/commonMain/kotlin/mealz/ai/AbstractSharedAnalytics.kt
+
+restore_version_number:
+	git restore mealz-shared-analytics/src/commonMain/kotlin/mealz/ai/AbstractSharedAnalytics.kt
 
 # ------------------------------------------ JS ------------------------------------------
 build_js_output:
 	./gradlew jsBrowserProductionWebpack
 
 build_dist_folder:
-	cd mealzSharedAnalytics && \
+	cd mealz-shared-analytics && \
 	ruby scripts/generate_ts_fun_declarations.rb && \
 	ruby scripts/generate_ts_types_declarations.rb && \
 	cp build/kotlin-webpack/js/productionExecutable/main.js dist/main.js && \
@@ -27,17 +35,14 @@ build_dist_folder:
 
 js: build_js_output build_dist_folder
 
-# ----------------------------------------- iOS ------------------------------------------
+# ----------------------------------------- IOS ------------------------------------------
 assemble_xcframework:
 	./gradlew clean && \
 	./gradlew assemblexcframework
 
-copy_xcframework_to_sources:
-	cp -r mealzSharedAnalytics/build/XCFrameworks/$(BUILD_TYPE)/mealzSharedAnalytics.xcframework ./Sources
+ios: assemble_xcframework
 
-ios: assemble_xcframework copy_xcframework_to_sources
-
-# --------------------------------------- Android ----------------------------------------
+# --------------------------------------- ANDROID ----------------------------------------
 
 android:
 	./gradlew assembleRelease

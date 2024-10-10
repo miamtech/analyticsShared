@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlinx.serialization)
-    id("convention.publication")
+    id("maven-publish")
 }
 
 group = "ai.mealz.analytics"
@@ -26,6 +26,8 @@ kotlin {
             }
         }
     }
+
+    withSourcesJar(false)
 
     // TODO: try to build with wasmJs
     js(IR) {
@@ -55,7 +57,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "mealzSharedAnalytics"
+            baseName = "mealz-shared-analytics"
             isStatic = true
             if (isModernXcodeLinker) linkerOpts += "-ld64"
             xcf.add(this)
@@ -111,10 +113,26 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 24
+        minSdk = 21
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "github"
+            url = uri("${buildDir.absolutePath}/release")
+        }
+    }
+
+    publications {
+        create<MavenPublication>("release") {
+            artifactId = "mealz-shared-analytics"
+            from(components["kotlin"])
+        }
     }
 }

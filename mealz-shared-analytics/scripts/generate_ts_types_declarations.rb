@@ -6,8 +6,7 @@ def camelize(str)
 end
 
 # Method to generate a TypeScript interface from a Kotlin data class
-def generate_ts_interface(data_class_name, properties, output_folder)
-  dependencies = []
+def generate_ts_interface(data_class_name, properties, output_file_path)
   ts_interface_params = properties.map do |property|
     name, type = property.split(":").map(&:strip)
     next if name.nil? || type.nil?
@@ -24,13 +23,10 @@ def generate_ts_interface(data_class_name, properties, output_folder)
               when "Int", "Long", "Double", "Float" then "number"
               when "Boolean" then "boolean"
               when "PlausibleEvent" then
-                  dependencies << "PlausibleEvent"
                   "PlausibleEvent"
               when "PlausibleProps" then
-                  dependencies << "PlausibleProps"
                   "PlausibleProps"
               when "onEmitFunction" then
-                  dependencies << "PlausibleEvent"
                   "(event: PlausibleEvent) => void"
               else "any" # You can expand this for more types
               end
@@ -42,20 +38,8 @@ def generate_ts_interface(data_class_name, properties, output_folder)
   ts_interface_name = camelize(data_class_name)
   ts_interface = "export interface #{ts_interface_name} {\n  #{ts_interface_params.join("\n  ")}\n}\n"
 
-  # Handle dependencies by adding import statements
-  imports = dependencies.map do |dependency|
-    "import { #{dependency} } from './#{dependency}';"
-  end.join("\n")
-
-  # Create the output folder if it doesn't exist
-  FileUtils.mkdir_p(output_folder)
-
-  # Define the output file path
-  output_file_path = File.join(output_folder, "#{ts_interface_name}.ts")
-
   # Write the TypeScript interface to the file
-  File.open(output_file_path, 'w') do |file|
-    file.puts imports unless imports.empty?
+  File.open(output_file_path, 'a') do |file|
     file.puts ts_interface
   end
 
@@ -64,6 +48,12 @@ end
 
 # Method to process Kotlin files in a directory and find data classes with @JsName
 def process_kotlin_files(directory, output_folder)
+  # Create the output folder if it doesn't exist
+  FileUtils.mkdir_p(output_folder)
+
+  # Define the output file path
+  output_file_path = File.join(output_folder, "main.d.ts")
+
   Dir.glob(File.join(directory, '**/*.kt')).each do |file_path|
     puts "Processing file: #{file_path}"
     lines = File.readlines(file_path)
@@ -86,15 +76,15 @@ def process_kotlin_files(directory, output_folder)
         end
 
         # Generate the TypeScript interface
-        generate_ts_interface(data_class_name, properties, output_folder)
+        generate_ts_interface(data_class_name, properties, output_file_path)
       end
     end
   end
 end
 
 # Define input directory and output directory
-input_directory = File.expand_path('../../analyticsShared/src/commonMain/kotlin/mealz/ai', __dir__)
-output_directory = File.expand_path('../../analyticsShared/dist/typescriptInterfaces', __dir__)
+input_directory = File.expand_path('../../mealz-shared-analytics/src/commonMain/kotlin/mealz/ai', __dir__)
+output_directory = File.expand_path('../../mealz-shared-analytics/dist', __dir__)
 
 # Process the Kotlin files to generate TypeScript interfaces
 process_kotlin_files(input_directory, output_directory)
