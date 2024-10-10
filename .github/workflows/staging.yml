@@ -3,7 +3,7 @@ name: On Pull Request (release to main)
 on:
   create:
     branches:
-      - release/**
+      - 'release/**'
 
 jobs:
   build:

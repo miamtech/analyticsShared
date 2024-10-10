@@ -29,7 +29,6 @@ build_dist_folder:
 	ruby scripts/generate_ts_fun_declarations.rb && \
 	ruby scripts/generate_ts_types_declarations.rb && \
 	cp build/kotlin-webpack/js/productionExecutable/main.js dist/main.js && \
-	echo "Using version $(VERSION)" && \
 	sed 's/"##VERSION##"/"$(VERSION)"/' build/processedResources/js/main/package.json > dist/package.json && \
 	cd ..
 

@@ -5,24 +5,26 @@ typealias onEmitFunction = (PlausibleEvent) -> Unit
 abstract class AbstractSharedAnalytics {
     private lateinit var onEmit: onEmitFunction
     private lateinit var domain: String
-    private lateinit var version: String
+    private lateinit var analyticsSDKVersion: String
+    private lateinit var clientSDKVersion: String
     private lateinit var abTestKey: String
     private lateinit var affiliate: String
 
     private val alreadyInitialized: Boolean
-        get() = this::domain.isInitialized && this::version.isInitialized && domain.isNotBlank() && version.isNotBlank()
+        get() = this::domain.isInitialized && this::clientSDKVersion.isInitialized && domain.isNotBlank() && clientSDKVersion.isNotBlank()
 
     fun init(domain: String, version: String, abTestKey: String, affiliate: String, onEmit: onEmitFunction) {
         if (alreadyInitialized) return
 
         this.domain = domain
-        this.version = version
+        this.analyticsSDKVersion = "##VERSION##"
+        this.clientSDKVersion = version
         this.abTestKey = abTestKey
         this.affiliate = affiliate
         this.onEmit = onEmit
     }
 
-    abstract fun sendRequest(event: PlausibleEvent);
+    abstract fun sendRequest(event: PlausibleEvent)
 
     private fun validatePath(path: String) {
         // If the path does not contain "/miam/", it may just be the URL of the page (web) or
@@ -34,7 +36,7 @@ abstract class AbstractSharedAnalytics {
         // Not using a list is the lightest way to do it when compiled in JS
         while (pathWithoutURL.isNotEmpty()) {
             // Find the index of the next '/' to separate path segments
-            val nextSlashIndex = pathWithoutURL.indexOf('/').takeIf { it != -1 } ?: pathWithoutURL.length
+            val nextSlashIndex = pathWithoutURL.indexOf('/').takeIf { it!=-1 } ?: pathWithoutURL.length
             val part = pathWithoutURL.substring(0, nextSlashIndex)
             // If the part is not in the valid set of path segments, throw an exception
             if (!validParts.contains("|$part|")) {
@@ -53,7 +55,8 @@ abstract class AbstractSharedAnalytics {
 
         validatePath(path)
         val fullProps = props.copy(
-            version = version,
+            client_sdk_version = clientSDKVersion,
+            analytics_sdk_version = analyticsSDKVersion,
             platform = getPlatform().name,
             abTestKey = abTestKey,
             affiliate = affiliate
