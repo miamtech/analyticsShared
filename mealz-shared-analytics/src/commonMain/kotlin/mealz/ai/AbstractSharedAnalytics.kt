@@ -7,20 +7,19 @@ abstract class AbstractSharedAnalytics {
     private lateinit var domain: String
     private lateinit var analyticsSDKVersion: String
     private lateinit var clientSDKVersion: String
-    private lateinit var abTestKey: String
-    private lateinit var affiliate: String
+
+    internal var abTestKey: String? = null
+    internal var affiliate: String? = null
 
     private val alreadyInitialized: Boolean
         get() = this::domain.isInitialized && this::clientSDKVersion.isInitialized && domain.isNotBlank() && clientSDKVersion.isNotBlank()
 
-    fun init(domain: String, version: String, abTestKey: String, affiliate: String, onEmit: onEmitFunction) {
+    fun init(domain: String, version: String, onEmit: onEmitFunction) {
         if (alreadyInitialized) return
 
         this.domain = domain
         this.analyticsSDKVersion = "##VERSION##"
         this.clientSDKVersion = version
-        this.abTestKey = abTestKey
-        this.affiliate = affiliate
         this.onEmit = onEmit
     }
 
@@ -38,9 +37,9 @@ abstract class AbstractSharedAnalytics {
             // Find the index of the next '/' to separate path segments
             val nextSlashIndex = pathWithoutURL.indexOf('/').takeIf { it!=-1 } ?: pathWithoutURL.length
             val part = pathWithoutURL.substring(0, nextSlashIndex)
-            // If the part is not in the valid set of path segments, throw an exception
-            if (!validParts.contains("|$part|")) {
-                throw IllegalArgumentException("Invalid path : $part")
+            // If the part is nor in the valid set of path segments or a number, throw an exception
+            if (!validParts.contains("|$part|") && part.toIntOrNull() == null) {
+                throw IllegalArgumentException("Invalid path : \"$path\". \"$part\" is not a valid path part.")
             }
 
             // Remove the processed part and move to the next segment if there's more path left

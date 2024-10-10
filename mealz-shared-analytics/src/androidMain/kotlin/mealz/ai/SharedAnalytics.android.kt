@@ -36,11 +36,11 @@ actual object SharedAnalytics : AbstractSharedAnalytics() {
     }
 
     actual fun sendPlausibleRequest(plausiblePath: String, path: String, plausibleProps: PlausibleProps) {
-        super.buildAndSendPlausibleRequest(plausiblePath, path, plausibleProps)
+        this.buildAndSendPlausibleRequest(plausiblePath, path, plausibleProps)
     }
 
-    actual fun initSharedAnalytics(domain: String, version: String, abTestKey: String, affiliate: String, onEmit: onEmitFunction) {
-        super.init(domain, version, abTestKey, affiliate, onEmit)
+    actual fun initSharedAnalytics(domain: String, version: String, onEmit: onEmitFunction) {
+        this.init(domain, version, onEmit)
         LogHandler.info("Analytics init for $domain")
     }
 }
