@@ -106,6 +106,7 @@ object EventService : EventSender {
         PlausibleDestinations.ENTRY_REPLACED.plausiblePath to propsOf(PlatformList("entry_name", "new_item_id", "new_item_ext_id", "new_item_ean"), PlatformList("old_item_id", "old_item_ext_id", "old_item_ean", "product_quantity", "search_term", "recipe_id")),
         PlausibleDestinations.ENTRY_CHANGE_QUANTITY.plausiblePath to propsOf(PlatformList("entry_name", "item_id", "ext_item_id", "item_ean", "product_quantity"), PlatformList("recipe_id")),
         PlausibleDestinations.ENTRY_IGNORE.plausiblePath to propsOf(PlatformList("entry_name", "item_id", "ext_item_id", "item_ean", "product_quantity"), PlatformList("recipe_id")),
+        PlausibleDestinations.PRODUCT_SHOW.plausiblePath to propsOf(PlatformList("entry_name", "item_id", "ext_item_id", "item_ean", "product_base_price", "recipe_id"), PlatformList()),
 
         // ------------------------------- ITEM SELECTOR -------------------------------------------
         PlausibleDestinations.ITEM_SELECTOR_BACK.plausiblePath to propsOf(PlatformList("recipe_id"), PlatformList()),
