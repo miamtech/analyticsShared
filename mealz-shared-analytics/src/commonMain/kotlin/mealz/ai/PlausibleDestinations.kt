@@ -76,6 +76,7 @@ internal enum class PlausibleDestinations(val plausiblePath: String) {
     ENTRY_REPLACED("entry.replaced"),
     ENTRY_CHANGE_QUANTITY("entry.change-quantity"),
     ENTRY_IGNORE("entry.ignore"),
+    PRODUCT_SHOW("product.show"),
 
     // ------------------------------- ITEM SELECTOR -------------------------------------------
     ITEM_SELECTOR_BACK("item-selector.back"),
